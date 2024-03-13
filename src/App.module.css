@@ -1,0 +1,14 @@
+.canvas {
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.canvas:hover {
+  box-shadow: 0 20px 40px 1px rgba(0, 0, 0, 0.12),
+    inset 0 -10px 20px -5px rgba(0, 0, 0, 0.3),
+    0 150px 100px -80px rgba(0, 0, 0, 0.4),
+    inset 0 1px 5px #fff,
+    inset 0 -1px 1px 1px rgba(0, 0, 0, 0.2);
+}

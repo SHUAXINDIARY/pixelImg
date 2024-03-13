@@ -1,15 +1,42 @@
-import React, { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImgList from "./components/ImgList";
-
-const Button = {
-  border: "none",
-  padding: "10px",
-  cursor: "pointer",
-} as React.CSSProperties;
+import { ParticleCanvas } from "./utils/ParticleCanvas";
+import { LogoImg } from "./utils/LogoImg";
+import BaseInfo from "./utils/constant";
+import styles from "./App.module.css";
+import BaseComponents from "./components/BaseComponents.module.css";
 
 function App() {
+  // 控制图片选择模板
   const [show, setShow] = useState(false);
-  const [selectImg, setSelectImg] = useState<{ url: string; label: string }>();
+  // 当前选择图片
+  const [selectImg, setSelectImg] = useState<LogoImg | null>(null);
+  // 画布
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // 上下文
+  let canvasCtx = useRef<CanvasRenderingContext2D | null>(null);
+  // 粒子画布实例
+  let ParticleCanvasInstance = useRef<ParticleCanvas | null>(null);
+
+  // 初始化
+  useEffect(() => {
+    if (canvasRef?.current) {
+      canvasCtx.current = canvasRef?.current?.getContext("2d")!;
+      ParticleCanvasInstance.current = new ParticleCanvas(
+        canvasRef.current,
+        canvasCtx.current
+      );
+    }
+  }, []);
+
+  // 选中图片在canvas里渲染
+  useEffect(() => {
+    if (selectImg) {
+      ParticleCanvasInstance?.current?.changeImg(selectImg);
+      ParticleCanvasInstance?.current?.drawCanvas();
+    }
+  }, [selectImg]);
+
   return (
     <div
       style={{
@@ -17,26 +44,48 @@ function App() {
         height: "100vh",
         display: "flex",
         justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#000",
+      }}
+      onClick={() => {
+        show && setShow(false);
       }}
     >
-      <div>afd</div>
+      <div>
+        <canvas
+          className={styles.canvas}
+          ref={canvasRef}
+          width={BaseInfo.width}
+          height={BaseInfo.height}
+        ></canvas>
+      </div>
       <button
         onClick={() => setShow((old) => !old)}
+        className={BaseComponents.Button}
         style={{
-          ...Button,
           position: "absolute",
           top: "20px",
           left: "20px",
         }}
       >
-        {show ? "关闭" : "选择图片"}
+        选择图片
       </button>
       <ImgList
-        selectImg={selectImg}
+        selectImg={{
+          url: selectImg?.src!,
+          label: selectImg?.name!,
+        }}
         isVisible={show}
-        onClose={() => setShow(false)}
-        callBack={(item) => {
-          setSelectImg(item);
+        onClickImg={async (item) => {
+          if (item) {
+            const logImg = new LogoImg(
+              item?.url,
+              item?.label,
+              canvasCtx.current
+            );
+            await logImg.init();
+            item?.url && item.label && setSelectImg(logImg);
+          }
         }}
       />
     </div>

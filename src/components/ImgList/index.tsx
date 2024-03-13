@@ -3,13 +3,13 @@ import AnimeJS from "animejs";
 import styles from "./index.module.css";
 interface ImgListProps {
   isVisible?: boolean;
-  onClose?: () => void;
-  callBack?: (item?: { url: string; label: string }) => void;
+  onClose?: (e?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onClickImg?: (item?: { url: string; label: string }) => void;
   selectImg?: { url: string; label: string };
 }
 
 export default function ImgList(props: ImgListProps) {
-  const { isVisible = false, onClose, callBack, selectImg } = props;
+  const { isVisible = false, onClose, onClickImg, selectImg } = props;
   const PanelRef = useRef<any>();
   const [imgListData, _] = useState<{ url: string; label: string }[]>([
     {
@@ -17,15 +17,18 @@ export default function ImgList(props: ImgListProps) {
       url: "src/assets/japan.jpg",
     },
     {
-      label: "one",
+      label: "rhodes",
+      url: "src/assets/logo_rhodes.png",
+    },
+    {
+      label: "two",
       url: "src/assets/logo_kazimierz.png",
     },
     {
-      label: "one",
+      label: "three",
       url: "src/assets/logo_rhine.png",
     },
   ]);
-  //   const [selectImg, setSelectImg] = useState<{ url: string; label: string }>();
   useEffect(() => {
     AnimeJS({
       targets: PanelRef?.current,
@@ -35,10 +38,14 @@ export default function ImgList(props: ImgListProps) {
   return (
     <div
       ref={PanelRef}
-      onClick={() => onClose?.()}
+      onClick={(e) => {
+        onClose?.(e);
+        e.stopPropagation();
+      }}
       style={{
         cursor: "pointer",
-        height: "100%",
+        height: "95%",
+        borderRadius: "30px",
         width: "200px",
         backgroundColor: "#000",
         position: "absolute",
@@ -46,7 +53,10 @@ export default function ImgList(props: ImgListProps) {
         color: "#fff",
         display: "flex",
         flexDirection: "column",
+        justifyContent: "center",
         alignItems: "center",
+        boxShadow:
+          "0 20px 40px 1px rgba(0,0,0,.12),inset 0 -10px 20px -5px rgba(0,0,0,.3),0 150px 100px -80px rgba(0,0,0,.4),inset 0 1px 4px hsla(0,0%,100%,.6),inset 0 -1px 1px 1px rgba(0,0,0,.2)",
       }}
     >
       {imgListData.map((item) => {
@@ -54,7 +64,7 @@ export default function ImgList(props: ImgListProps) {
           <img
             onClick={() => {
               //   setSelectImg(item);
-              callBack?.(item);
+              onClickImg?.(item);
             }}
             className={styles.img}
             key={item.label}
@@ -63,13 +73,13 @@ export default function ImgList(props: ImgListProps) {
             style={
               item.url === selectImg?.url
                 ? {
-                    width: "80%",
+                    width: "60%",
                     margin: "20px 0",
                     borderRadius: "3px",
-                    border: "5px solid #a6a4a4",
+                    border: "5px solid #fff",
                   }
                 : {
-                    width: "80%",
+                    width: "60%",
                     margin: "20px 0",
                   }
             }
