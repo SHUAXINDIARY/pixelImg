@@ -1,24 +1,20 @@
 import { Particle } from "./Particle";
 import module from "./constant";
-
+import { CanvasSizeProps } from "./types";
 const { animateTime } = module;
 /** Logo图片类 */
 export class LogoImg {
   src: string;
   name: string;
   particleData: Particle[]; // 用于保存筛选后的粒子
-  context: any;
+  context: CanvasRenderingContext2D;
   canvasSize;
   constructor(
     src: string,
     name: string,
-    context: any,
-    canvasSize?: {
-      width: number;
-      height: number;
-    }
+    context: CanvasRenderingContext2D,
+    canvasSize?: CanvasSizeProps
   ) {
-    console.log(canvasSize);
     this.canvasSize = canvasSize || {
       width: 700,
       height: 700,

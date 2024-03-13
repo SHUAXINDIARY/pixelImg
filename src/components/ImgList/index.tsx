@@ -2,17 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import AnimeJS from "animejs";
 import styles from "./index.module.css";
 import LazyImg from "../LazyImg";
+import { ImgInfoProps } from "../../utils/types";
 interface ImgListProps {
   isVisible?: boolean;
   onClose?: (e?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  onClickImg?: (item?: { url: string; label: string }) => void;
-  selectImg?: { url: string; label: string };
+  onClickImg?: (item?: ImgInfoProps) => void;
+  selectImg?: ImgInfoProps;
 }
 
 export default function ImgList(props: ImgListProps) {
   const { isVisible = false, onClose, onClickImg, selectImg } = props;
-  const PanelRef = useRef<any>();
-  const [imgListData, _] = useState<{ url: string; label: string }[]>([
+  const PanelRef = useRef(null);
+  const [imgListData, _] = useState<ImgInfoProps[]>([
     {
       label: "rhodes",
       url: "/assets/logo_rhodes.png",

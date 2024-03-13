@@ -1,7 +1,7 @@
-import { Particle } from "./Particle";
-import { LogoImg } from "./LogoImg";
 import module from "./constant";
-
+import { LogoImg } from "./LogoImg";
+import { Particle } from "./Particle";
+import { CanvasSizeProps } from "./types";
 const { animateTime } = module;
 // 画布类
 export class ParticleCanvas {
@@ -12,14 +12,11 @@ export class ParticleCanvas {
   ParticleArr: Particle[];
   mouseX?: number; // 鼠标X轴位置
   mouseY?: number; // 鼠标Y轴位置
-  context: any;
-  canvasSize: {
-    width?: number;
-    height?: number;
-  } = {};
+  context: CanvasRenderingContext2D;
+  canvasSize: Partial<CanvasSizeProps> = {};
   constructor(
     target: HTMLCanvasElement,
-    context: any,
+    context: CanvasRenderingContext2D,
     canvasSize: {
       width?: number;
       height?: number;
@@ -47,6 +44,10 @@ export class ParticleCanvas {
   }
   // 改变图片 如果已存在图片则根据情况额外操作
   changeImg(img: LogoImg) {
+    const sizeInfo = {
+      width: this.canvasSize.width!,
+      height: this.canvasSize.height!,
+    };
     if (this.ParticleArr.length) {
       // 获取新旧两个粒子数组与它们的长度
       let newPrtArr = img.particleData;
@@ -68,7 +69,7 @@ export class ParticleCanvas {
             animateTime,
             color,
             this.context,
-            this.canvasSize
+            sizeInfo
           );
         }
       }
@@ -101,7 +102,7 @@ export class ParticleCanvas {
             animateTime,
             item.color,
             this.context,
-            this.canvasSize
+            sizeInfo
           )
       );
     }

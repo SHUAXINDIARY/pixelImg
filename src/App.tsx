@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import ImgList from "./components/ImgList";
-import { ParticleCanvas } from "./utils/ParticleCanvas";
-import { LogoImg } from "./utils/LogoImg";
 import BaseInfo from "./utils/constant";
 import styles from "./App.module.css";
 import BaseComponents from "./components/BaseComponents.module.css";
-import { getImgSize, transforBase64 } from "./utils";
 import Upload from "./components/Upload";
+import { useEffect, useRef, useState } from "react";
+import { ParticleCanvas } from "./utils/ParticleCanvas";
+import { LogoImg } from "./utils/LogoImg";
+import { getImgSize, transforBase64 } from "./utils";
+import { CanvasSizeProps } from "./utils/types";
 
 function App() {
   // 控制图片选择模板
@@ -20,28 +21,11 @@ function App() {
   // 粒子画布实例
   let ParticleCanvasInstance = useRef<ParticleCanvas | null>(null);
   // 画布尺寸
-  const [canvasSize, setCanvasSize] = useState<{
-    width?: number;
-    height?: number;
-  }>({
+  const [canvasSize, setCanvasSize] = useState<CanvasSizeProps>({
     width: BaseInfo.width,
     height: BaseInfo.height,
   });
   // 初始化
-  useEffect(() => {
-    if (canvasRef?.current) {
-      canvasCtx.current = canvasRef?.current?.getContext("2d")!;
-      ParticleCanvasInstance.current = new ParticleCanvas(
-        canvasRef.current,
-        canvasCtx.current,
-        {
-          width: canvasSize.width,
-          height: canvasSize.height,
-        }
-      );
-    }
-  }, []);
-
   useEffect(() => {
     if (canvasRef?.current) {
       canvasCtx.current = canvasRef?.current?.getContext("2d")!;
@@ -66,7 +50,7 @@ function App() {
 
   const changeImg = async (item: { url: string; label: string }) => {
     const size = await getImgSize(item.url);
-    const logImg = new LogoImg(item?.url, item?.label, canvasCtx.current, size);
+    const logImg = new LogoImg(item?.url, item?.label, canvasCtx.current!, size);
     await logImg.init();
     setCanvasSize((_) => size);
     setTimeout(() => {

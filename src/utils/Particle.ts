@@ -1,5 +1,5 @@
 import module from "./constant";
-
+import { CanvasSizeProps } from "./types";
 const { Radius, Inten, opacityStep, GAP_VAL } = module;
 
 export class Particle {
@@ -16,7 +16,7 @@ export class Particle {
   color: number[]; // 粒子的颜色
   opacity: number; // 粒子的透明度
   //   canvas上下文
-  context: any;
+  context: CanvasRenderingContext2D;
   canvasSize: {
     width?: number;
     height?: number;
@@ -26,11 +26,8 @@ export class Particle {
     totalY: number,
     time: number,
     color: number[],
-    context: any,
-    canvasSize: {
-      width: number;
-      height: number;
-    }
+    context: CanvasRenderingContext2D,
+    canvasSize: CanvasSizeProps
   ) {
     // 设置粒子的初始位置x、y，目标位置totalX、totalY，总耗时time
     this.x = (Math.random() * this.canvasSize.width!) >> 0;
