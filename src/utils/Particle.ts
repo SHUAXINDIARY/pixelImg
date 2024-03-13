@@ -1,6 +1,6 @@
 import module from "./constant";
 
-const { width, height, Radius, Inten, opacityStep, GAP_VAL } = module;
+const { Radius, Inten, opacityStep, GAP_VAL } = module;
 
 export class Particle {
   x: number; // 粒子x轴的初始位置
@@ -17,16 +17,24 @@ export class Particle {
   opacity: number; // 粒子的透明度
   //   canvas上下文
   context: any;
+  canvasSize: {
+    width?: number;
+    height?: number;
+  } = {};
   constructor(
     totalX: number,
     totalY: number,
     time: number,
     color: number[],
-    context: any
+    context: any,
+    canvasSize: {
+      width: number;
+      height: number;
+    }
   ) {
     // 设置粒子的初始位置x、y，目标位置totalX、totalY，总耗时time
-    this.x = (Math.random() * width) >> 0;
-    this.y = (Math.random() * height) >> 0;
+    this.x = (Math.random() * this.canvasSize.width!) >> 0;
+    this.y = (Math.random() * this.canvasSize.height!) >> 0;
     this.totalX = totalX;
     this.totalY = totalY;
     this.time = time;
@@ -35,6 +43,7 @@ export class Particle {
     this.color = [...color];
     this.opacity = 0;
     this.context = context;
+    this.canvasSize = canvasSize;
   }
   // 在画布中绘制粒子
   draw() {

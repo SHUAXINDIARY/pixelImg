@@ -5,7 +5,7 @@ import { LogoImg } from "./utils/LogoImg";
 import BaseInfo from "./utils/constant";
 import styles from "./App.module.css";
 import BaseComponents from "./components/BaseComponents.module.css";
-import { transforBase64 } from "./utils";
+import { getImgSize, transforBase64 } from "./utils";
 import Upload from "./components/Upload";
 
 function App() {
@@ -19,17 +19,42 @@ function App() {
   let canvasCtx = useRef<CanvasRenderingContext2D | null>(null);
   // 粒子画布实例
   let ParticleCanvasInstance = useRef<ParticleCanvas | null>(null);
-
+  // 画布尺寸
+  const [canvasSize, setCanvasSize] = useState<{
+    width?: number;
+    height?: number;
+  }>({
+    width: BaseInfo.width,
+    height: BaseInfo.height,
+  });
   // 初始化
   useEffect(() => {
     if (canvasRef?.current) {
       canvasCtx.current = canvasRef?.current?.getContext("2d")!;
       ParticleCanvasInstance.current = new ParticleCanvas(
         canvasRef.current,
-        canvasCtx.current
+        canvasCtx.current,
+        {
+          width: canvasSize.width,
+          height: canvasSize.height,
+        }
       );
     }
   }, []);
+
+  useEffect(() => {
+    if (canvasRef?.current) {
+      canvasCtx.current = canvasRef?.current?.getContext("2d")!;
+      ParticleCanvasInstance.current = new ParticleCanvas(
+        canvasRef.current,
+        canvasCtx.current,
+        {
+          width: canvasSize.width,
+          height: canvasSize.height,
+        }
+      );
+    }
+  }, [canvasSize]);
 
   // 选中图片在canvas里渲染
   useEffect(() => {
@@ -37,16 +62,17 @@ function App() {
       ParticleCanvasInstance?.current?.changeImg(selectImg);
       ParticleCanvasInstance?.current?.drawCanvas();
     }
-  }, [selectImg]);
+  }, [selectImg, canvasSize]);
 
-  const changeImg = useCallback(
-    async (item: { url: string; label: string }) => {
-      const logImg = new LogoImg(item?.url, item?.label, canvasCtx.current);
-      await logImg.init();
-      item?.url && item.label && setSelectImg(logImg);
-    },
-    []
-  );
+  const changeImg = async (item: { url: string; label: string }) => {
+    const size = await getImgSize(item.url);
+    const logImg = new LogoImg(item?.url, item?.label, canvasCtx.current, size);
+    await logImg.init();
+    setCanvasSize((_) => size);
+    setTimeout(() => {
+      item?.url && item?.label && setSelectImg((_) => logImg);
+    }, 100);
+  };
 
   return (
     <div
@@ -64,11 +90,12 @@ function App() {
     >
       <div>
         <canvas
+          // key={selectImg?.src}
           // 仅有图片需要绘制的时候才展示
           className={selectImg?.src && styles.canvas}
           ref={canvasRef}
-          width={BaseInfo.width}
-          height={BaseInfo.height}
+          width={canvasSize.width}
+          height={canvasSize.height}
         ></canvas>
       </div>
       <div
@@ -91,10 +118,12 @@ function App() {
           callback={async (e) => {
             const file = e!.target.files?.[0];
             const data = await transforBase64(file!);
-            changeImg({
-              label: file?.name!,
-              url: data as string,
-            });
+            file &&
+              data &&
+              changeImg({
+                label: file?.name!,
+                url: data as string,
+              });
           }}
         />
       </div>

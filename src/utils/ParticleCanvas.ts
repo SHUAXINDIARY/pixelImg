@@ -13,7 +13,18 @@ export class ParticleCanvas {
   mouseX?: number; // 鼠标X轴位置
   mouseY?: number; // 鼠标Y轴位置
   context: any;
-  constructor(target: HTMLCanvasElement, context: any) {
+  canvasSize: {
+    width?: number;
+    height?: number;
+  } = {};
+  constructor(
+    target: HTMLCanvasElement,
+    context: any,
+    canvasSize: {
+      width?: number;
+      height?: number;
+    }
+  ) {
     this.context = context;
     // 设置画布 获取画布上下文
     this.canvasEle = target;
@@ -32,6 +43,7 @@ export class ParticleCanvas {
       this.mouseX = 0;
       this.mouseY = 0;
     };
+    this.canvasSize = canvasSize;
   }
   // 改变图片 如果已存在图片则根据情况额外操作
   changeImg(img: LogoImg) {
@@ -55,7 +67,8 @@ export class ParticleCanvas {
             totalY,
             animateTime,
             color,
-            this.context
+            this.context,
+            this.canvasSize
           );
         }
       }
@@ -87,7 +100,8 @@ export class ParticleCanvas {
             item.totalY,
             animateTime,
             item.color,
-            this.context
+            this.context,
+            this.canvasSize
           )
       );
     }

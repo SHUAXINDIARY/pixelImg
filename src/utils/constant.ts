@@ -1,6 +1,6 @@
 // 设置画布大小
-const width = 1000,
-  height = 600;
+const width = 700,
+  height = 700;
 
 // 设置粒子动画时长
 const animateTime = 30;

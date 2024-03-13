@@ -1,14 +1,28 @@
 import { Particle } from "./Particle";
 import module from "./constant";
 
-const { width, height, animateTime } = module;
+const { animateTime } = module;
 /** Logo图片类 */
 export class LogoImg {
   src: string;
   name: string;
   particleData: Particle[]; // 用于保存筛选后的粒子
   context: any;
-  constructor(src: string, name: string, context: any) {
+  canvasSize;
+  constructor(
+    src: string,
+    name: string,
+    context: any,
+    canvasSize?: {
+      width: number;
+      height: number;
+    }
+  ) {
+    console.log(canvasSize);
+    this.canvasSize = canvasSize || {
+      width: 700,
+      height: 700,
+    };
     this.context = context;
     this.src = src;
     this.name = name;
@@ -24,15 +38,14 @@ export class LogoImg {
         // 获取图片像素数据
         const tmp_canvas = document.createElement("canvas"); // 创建一个空的canvas
         const tmp_ctx = tmp_canvas.getContext("2d");
-        const imgW = width;
-        //   const imgH = ~~(width * (img.height / img.width));
-        const imgH = height;
+        const imgW = this.canvasSize.width;
+        const imgH = this.canvasSize.height;
         tmp_canvas.width = imgW;
         tmp_canvas.height = imgH;
         tmp_ctx?.drawImage(img, 0, 0, imgW, imgH); // 将图片绘制到canvas中
         const imgData = tmp_ctx?.getImageData(0, 0, imgW, imgH).data; // 获取像素点数据
 
-        tmp_ctx?.clearRect(0, 0, width, height);
+        tmp_ctx?.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height);
 
         // 筛选像素点
         for (let y = 0; y < imgH; y += 5) {
@@ -52,7 +65,8 @@ export class LogoImg {
                 y,
                 animateTime,
                 [r, g, b, a],
-                this.context
+                this.context,
+                this.canvasSize
               );
               this.particleData.push(particle);
             }

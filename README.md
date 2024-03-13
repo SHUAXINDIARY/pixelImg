@@ -4,7 +4,7 @@
 
 基于 [ark-particle-animation](https://github.com/XIwE1/ark-particle-animation) 二次开发
 
-## 能力
+## TODO
 
 - [x] 支持本地上传图片
 - [ ] 支持在线图片
