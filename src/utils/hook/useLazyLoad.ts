@@ -7,8 +7,6 @@ const useLazyLoad = (imageSrc: string, placeholderSrc: string) => {
   useEffect(() => {
     // 创建IntersectionObserver实例并配置回调函数
     const observer = new IntersectionObserver((entries) => {
-      console.log("调试entries", entries);
-
       if (entries[0].isIntersecting) {
         // 当图片进入可视区域时，替换图片源
         setImageSrc(imageSrc);

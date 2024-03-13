@@ -14,10 +14,6 @@ export default function ImgList(props: ImgListProps) {
   const PanelRef = useRef<any>();
   const [imgListData, _] = useState<{ url: string; label: string }[]>([
     {
-      label: "one",
-      url: "/assets/japan.jpg",
-    },
-    {
       label: "rhodes",
       url: "/assets/logo_rhodes.png",
     },
@@ -50,6 +46,7 @@ export default function ImgList(props: ImgListProps) {
         width: "200px",
         backgroundColor: "#000",
         position: "absolute",
+        zIndex: 999,
         left: "-200px",
         color: "#fff",
         display: "flex",

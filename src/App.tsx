@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ImgList from "./components/ImgList";
 import { ParticleCanvas } from "./utils/ParticleCanvas";
 import { LogoImg } from "./utils/LogoImg";
 import BaseInfo from "./utils/constant";
 import styles from "./App.module.css";
 import BaseComponents from "./components/BaseComponents.module.css";
+import { transforBase64 } from "./utils";
+import Upload from "./components/Upload";
 
 function App() {
   // 控制图片选择模板
@@ -37,6 +39,15 @@ function App() {
     }
   }, [selectImg]);
 
+  const changeImg = useCallback(
+    async (item: { url: string; label: string }) => {
+      const logImg = new LogoImg(item?.url, item?.label, canvasCtx.current);
+      await logImg.init();
+      item?.url && item.label && setSelectImg(logImg);
+    },
+    []
+  );
+
   return (
     <div
       style={{
@@ -60,33 +71,41 @@ function App() {
           height={BaseInfo.height}
         ></canvas>
       </div>
-      <button
-        onClick={() => setShow((old) => !old)}
-        className={BaseComponents.Button}
+      <div
         style={{
           position: "absolute",
           top: "20px",
           left: "20px",
+          width: "100px",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        选择图片
-      </button>
+        <button
+          onClick={() => setShow((old) => !old)}
+          className={BaseComponents.Button}
+        >
+          示例图片
+        </button>
+        <Upload
+          callback={async (e) => {
+            const file = e!.target.files?.[0];
+            const data = await transforBase64(file!);
+            changeImg({
+              label: file?.name!,
+              url: data as string,
+            });
+          }}
+        />
+      </div>
       <ImgList
         selectImg={{
           url: selectImg?.src!,
           label: selectImg?.name!,
         }}
         isVisible={show}
-        onClickImg={async (item) => {
-          if (item) {
-            const logImg = new LogoImg(
-              item?.url,
-              item?.label,
-              canvasCtx.current
-            );
-            await logImg.init();
-            item?.url && item.label && setSelectImg(logImg);
-          }
+        onClickImg={(item) => {
+          item && changeImg(item);
         }}
       />
     </div>
