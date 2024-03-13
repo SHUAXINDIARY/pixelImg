@@ -18,7 +18,7 @@ export class LogoImg {
     let img = new Image();
     img.crossOrigin = "";
     img.src = this.src;
-    return new Promise((res, rej) => {
+    return new Promise((res, _) => {
       // canvas 解析数据源获取粒子数据
       img.onload = () => {
         // 获取图片像素数据
