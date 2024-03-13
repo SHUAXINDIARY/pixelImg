@@ -14,19 +14,19 @@ export default function ImgList(props: ImgListProps) {
   const [imgListData, _] = useState<{ url: string; label: string }[]>([
     {
       label: "one",
-      url: "src/assets/japan.jpg",
+      url: "/assets/japan.jpg",
     },
     {
       label: "rhodes",
-      url: "src/assets/logo_rhodes.png",
+      url: "/assets/logo_rhodes.png",
     },
     {
       label: "two",
-      url: "src/assets/logo_kazimierz.png",
+      url: "/assets/logo_kazimierz.png",
     },
     {
       label: "three",
-      url: "src/assets/logo_rhine.png",
+      url: "/assets/logo_rhine.png",
     },
   ]);
   useEffect(() => {
