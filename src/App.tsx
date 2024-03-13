@@ -53,7 +53,8 @@ function App() {
     >
       <div>
         <canvas
-          className={styles.canvas}
+          // 仅有图片需要绘制的时候才展示
+          className={selectImg?.src && styles.canvas}
           ref={canvasRef}
           width={BaseInfo.width}
           height={BaseInfo.height}

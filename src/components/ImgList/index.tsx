@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import AnimeJS from "animejs";
 import styles from "./index.module.css";
+import LazyImg from "../LazyImg";
 interface ImgListProps {
   isVisible?: boolean;
   onClose?: (e?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -49,7 +50,7 @@ export default function ImgList(props: ImgListProps) {
         width: "200px",
         backgroundColor: "#000",
         position: "absolute",
-        left: -200 + "px",
+        left: "-200px",
         color: "#fff",
         display: "flex",
         flexDirection: "column",
@@ -61,9 +62,9 @@ export default function ImgList(props: ImgListProps) {
     >
       {imgListData.map((item) => {
         return (
-          <img
+          // <img
+          <LazyImg
             onClick={() => {
-              //   setSelectImg(item);
               onClickImg?.(item);
             }}
             className={styles.img}
