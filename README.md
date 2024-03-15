@@ -12,4 +12,4 @@
 - [ ] 支持渲染引擎选择：
   - [x] canvas - 默认
   - [ ] webgl
-  - [ ] sharder
+  - [ ] skia

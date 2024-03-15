@@ -35,7 +35,7 @@ function App() {
         {
           width: canvasSize.width,
           height: canvasSize.height,
-        }
+        },
       );
     }
   }, [canvasSize]);
@@ -50,12 +50,15 @@ function App() {
 
   const changeImg = async (item: { url: string; label: string }) => {
     const size = await getImgSize(item.url);
-    const logImg = new LogoImg(item?.url, item?.label, canvasCtx.current!, size);
+    const logImg = new LogoImg(
+      item?.url,
+      item?.label,
+      canvasCtx.current!,
+      size,
+    );
     await logImg.init();
     setCanvasSize((_) => size);
-    setTimeout(() => {
-      item?.url && item?.label && setSelectImg((_) => logImg);
-    }, 100);
+    item?.url && item?.label && setSelectImg((_) => logImg);
   };
 
   return (

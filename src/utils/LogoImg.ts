@@ -1,20 +1,30 @@
 import { Particle } from "./Particle";
 import module from "./constant";
-import { CanvasSizeProps } from "./types";
+import { CanvasSizeProps, RenderMode } from "./types";
 const { animateTime } = module;
 /** Logo图片类 */
-export class LogoImg {
+export class LogoImg<T = CanvasRenderingContext2D> {
+  // 图片链接
   src: string;
+  // 图片名称
   name: string;
-  particleData: Particle[]; // 用于保存筛选后的粒子
-  context: CanvasRenderingContext2D;
-  canvasSize;
+  // 图片转换后的粒子
+  particleData: Particle<T>[]; // 用于保存筛选后的粒子
+  // 渲染上下文
+  context: T;
+  // 画布尺寸
+  canvasSize: CanvasSizeProps;
+  // 当前渲染模式
+  renderMode: RenderMode;
+
   constructor(
     src: string,
     name: string,
-    context: CanvasRenderingContext2D,
-    canvasSize?: CanvasSizeProps
+    context: T,
+    canvasSize?: CanvasSizeProps,
+    renderMode = RenderMode.canvas,
   ) {
+    this.renderMode = renderMode;
     this.canvasSize = canvasSize || {
       width: 700,
       height: 700,
@@ -62,7 +72,7 @@ export class LogoImg {
                 animateTime,
                 [r, g, b, a],
                 this.context,
-                this.canvasSize
+                this.canvasSize,
               );
               this.particleData.push(particle);
             }

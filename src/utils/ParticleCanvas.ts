@@ -1,31 +1,34 @@
 import module from "./constant";
 import { LogoImg } from "./LogoImg";
 import { Particle } from "./Particle";
-import { CanvasSizeProps } from "./types";
+import { CanvasSizeProps, RenderMode } from "./types";
 const { animateTime } = module;
 // 画布类
-export class ParticleCanvas {
+export class ParticleCanvas<T = CanvasRenderingContext2D> {
   canvasEle: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
+  ctx: T;
   width: number;
   height: number;
-  ParticleArr: Particle[];
+  ParticleArr: Particle<T>[];
   mouseX?: number; // 鼠标X轴位置
   mouseY?: number; // 鼠标Y轴位置
-  context: CanvasRenderingContext2D;
+  context: T;
   canvasSize: Partial<CanvasSizeProps> = {};
+  renderMode: RenderMode;
   constructor(
     target: HTMLCanvasElement,
-    context: CanvasRenderingContext2D,
+    context: T,
     canvasSize: {
       width?: number;
       height?: number;
-    }
+    },
+    renderMode = RenderMode.canvas,
   ) {
+    this.renderMode = renderMode;
     this.context = context;
     // 设置画布 获取画布上下文
     this.canvasEle = target;
-    this.ctx = target.getContext("2d") as CanvasRenderingContext2D;
+    this.ctx = target.getContext("2d") as T;
     this.width = target.width;
     this.height = target.height;
     this.ParticleArr = [];
@@ -69,7 +72,7 @@ export class ParticleCanvas {
             animateTime,
             color,
             this.context,
-            sizeInfo
+            sizeInfo,
           );
         }
       }
@@ -81,6 +84,7 @@ export class ParticleCanvas {
       // 随机打乱粒子最终对应的位置 使切换效果更自然
       while (tmp_len) {
         // 随机的一个粒子 与 倒序的一个粒子
+        // 快速取整
         let randomIdx = ~~(Math.random() * tmp_len--);
         let randomPrt = arr[randomIdx];
         let { totalX: tx, totalY: ty, color } = randomPrt;
@@ -102,17 +106,24 @@ export class ParticleCanvas {
             animateTime,
             item.color,
             this.context,
-            sizeInfo
-          )
+            sizeInfo,
+          ),
       );
     }
   }
   drawCanvas() {
-    this.ctx.clearRect(0, 0, this.width, this.height);
-    this.ParticleArr.forEach((particle) => {
-      particle.update(this.mouseX, this.mouseY);
-      particle.draw();
-    });
+    if (this.renderMode === RenderMode.canvas) {
+      (this.ctx as CanvasRenderingContext2D).clearRect(
+        0,
+        0,
+        this.width,
+        this.height,
+      );
+      this.ParticleArr.forEach((particle) => {
+        particle.update(this.mouseX, this.mouseY);
+        particle.draw();
+      });
+    }
     window.requestAnimationFrame(() => this.drawCanvas());
   }
 }

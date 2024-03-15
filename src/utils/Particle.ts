@@ -1,8 +1,8 @@
 import module from "./constant";
-import { CanvasSizeProps } from "./types";
+import { CanvasSizeProps, RenderMode } from "./types";
 const { Radius, Inten, opacityStep, GAP_VAL } = module;
 
-export class Particle {
+export class Particle<T = CanvasRenderingContext2D> {
   x: number; // 粒子x轴的初始位置
   y: number; // 粒子y轴的初始位置
   totalX: number; // 粒子x轴的目标位置
@@ -16,19 +16,22 @@ export class Particle {
   color: number[]; // 粒子的颜色
   opacity: number; // 粒子的透明度
   //   canvas上下文
-  context: CanvasRenderingContext2D;
+  context: T;
   canvasSize: {
     width?: number;
     height?: number;
   } = {};
+  renderMode: RenderMode;
   constructor(
     totalX: number,
     totalY: number,
     time: number,
     color: number[],
-    context: CanvasRenderingContext2D,
-    canvasSize: CanvasSizeProps
+    context: T,
+    canvasSize: CanvasSizeProps,
+    renderMode = RenderMode.canvas,
   ) {
+    this.renderMode = renderMode;
     // 设置粒子的初始位置x、y，目标位置totalX、totalY，总耗时time
     this.x = (Math.random() * this.canvasSize.width!) >> 0;
     this.y = (Math.random() * this.canvasSize.height!) >> 0;
@@ -44,9 +47,17 @@ export class Particle {
   }
   // 在画布中绘制粒子
   draw() {
-    this.context!.fillStyle = `rgba(${this.color.toString()})`;
-    this.context!.fillRect(this.x, this.y, this.r * 2, this.r * 2);
-    this.context!.fill();
+    if (this.renderMode === RenderMode.canvas) {
+      (this.context as CanvasRenderingContext2D).fillStyle =
+        `rgba(${this.color.toString()})`;
+      (this.context as CanvasRenderingContext2D).fillRect(
+        this.x,
+        this.y,
+        this.r * 2,
+        this.r * 2,
+      );
+      (this.context as CanvasRenderingContext2D).fill();
+    }
   }
   /** 更新粒子
    * @param {number} mouseX 鼠标X位置
